@@ -1,0 +1,8 @@
+2017/08/24	09:24	David_Song   	214  list1 to list12	0/12
+2017/08/24	09:25	dd           	214  list1 to list1	0/10
+2017/08/24	09:27	David_Son    	214  list1 to list12	0/12
+2017/08/24	09:28	12           	214  list1 to list12	0/12
+2017/08/24	09:28	Alice_Wang   	214  list1 to list12	0/12
+2017/08/24	09:51	Alice_Wang   	214  list1 to list12	1/12
+2017/08/25	18:38	David_Song   	214  list1 to list121	0/12
+2017/11/13	14:19	David_Song   	214  list1 to list2	1/10
