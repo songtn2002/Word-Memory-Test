@@ -352,25 +352,41 @@ class DoubleClickSensor{
 
 class MistakeRecord{
   
-  private WordUnit correctAnswer;
-  private WordUnit yourAnswer;
+  private String correctAnswer;
+  private String yourAnswer;
   private String questionType;
+  private WordUnit[] choices;
+  private WordUnit currentTested;
   
-  public MistakeRecord(WordUnit correctAnswer,WordUnit yourAnswer, String questionType){
+  public MistakeRecord(WordUnit currentTested, String correctAnswer,String yourAnswer, String questionType, WordUnit[] choices){
     this.correctAnswer = correctAnswer;
     this.yourAnswer = yourAnswer;
     this.questionType = questionType;
+    this.choices = choices;
+    this.currentTested = currentTested;
   }
   
-  public WordUnit getCorrectAnswer(){
+  public String getCorrectAnswer(){
     return this.correctAnswer;
   }
   
-  public WordUnit getYourAnswer(){
+  public String getYourAnswer(){
     return this.yourAnswer;
   }
   
   public String getQuestionType(){
     return this.questionType;
+  }
+  
+  public WordUnit[] getChoices(){
+    return choices;
+  }
+  
+  public WordUnit getChoice(char c){
+    return choices[c-'A'];
+  }
+  
+  public WordUnit getCurrentTested() {
+    return currentTested;
   }
 }

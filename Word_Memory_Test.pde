@@ -74,6 +74,9 @@ ArrayList<WordUnit> testedWords = new ArrayList<WordUnit>();
 LinkedList<WordUnit> entireBook = new LinkedList<WordUnit>();//之所以要把整本书读进来，是因为，选相似的词要用到
 ArrayList<Integer> recorder = new ArrayList<Integer>();
 int totalWordCount;
+char answer = ' ';
+int answerP = -1;
+String MAnswer = "";
 char choosed = ' ';
 String mChoosed = "";//这个变量记录多选的选择
 WordUnit currentTested;

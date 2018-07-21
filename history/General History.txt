@@ -7,3 +7,4 @@
 2017/08/25	18:38	David_Song   	214  list1 to list121	0/12
 2017/11/13	14:19	David_Song   	214  list1 to list2	1/10
 2018/07/21	20:34	david_song   	SAT  list1 to list1	0/12
+2018/07/21	22:27	david_sog    	214  list1 to list1	0/10

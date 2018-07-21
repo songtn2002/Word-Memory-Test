@@ -201,7 +201,7 @@ void checkAnswer(){
         }
       }
       if (!errors.equals("")) errors = errors.substring(0,errors.length()-1);
-      mistakes.add(new MistakeRecord(currentTested,new WordUnit(errors),questionType));
+      
     }else{
       boolean checkResult = true;
       for (char c : chars){
@@ -222,7 +222,7 @@ void checkAnswer(){
           }
         }
         if (!errors.equals("")) errors = errors.substring(0,errors.length()-1);
-        mistakes.add(new MistakeRecord(currentTested,new WordUnit(errors),questionType));
+        mistakes.add(new MistakeRecord(currentTested,MAnswer, mChoosed, questionType, choices));
       }
     }
   }else{
@@ -231,11 +231,11 @@ void checkAnswer(){
             correct++;
           }else{
             wrong++;
-            mistakes.add(new MistakeRecord(currentTested,choices[choosed-'A'],questionType));
+            mistakes.add(new MistakeRecord(currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
           }
      }else{
         wrong++;
-        mistakes.add(new MistakeRecord(currentTested,null,questionType));
+        mistakes.add(new MistakeRecord(currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
      }
   }
 }
@@ -323,7 +323,8 @@ void takeOneWord(){
 void CtoEInit(){//这两个函数作用是相同的，把choices数组填满，并设定好题型
   questionType = "CtoE";
   int[] book = new int[5];
-  int answerP = randint(0,4);
+  answerP = randint(0,4);
+  answer = (char)('A'+answerP);
   book[answerP] = 1;
   choices[answerP] = currentTested;//第一步，确定选项的位置
   ArrayList<WordUnit> choiceRange = new ArrayList<WordUnit>();
@@ -388,7 +389,8 @@ void CtoEInit(){//这两个函数作用是相同的，把choices数组填满，�
 void EtoCInit(){//这两个函数作用是相同的，把choices数组填满，并设定好题型
   questionType = "EtoC";
   int[] book = new int[5];
-  int answerP = randint(0,4);
+  answerP = randint(0,4);
+  answer = (char)('A'+answerP);
   book[answerP] = 1;
   choices[answerP] = currentTested;//也是一样，第一步，确定选项的位置
   for (int i =0; i<4; i++){
@@ -412,6 +414,7 @@ void EtoCInit(){//这两个函数作用是相同的，把choices数组填满，�
 }//This is the end of initializing single choice question part
 
 void MInit(){//这个函数作用也是相同的，把choices数组填满，并设定好题型
+  MAnswer = "";
   questionType = "multiple";
   ArrayList<WordUnit> defs = currentTested.getDefAsWordUnits();
   correctDefs = new ArrayList<WordUnit>();
@@ -421,6 +424,7 @@ void MInit(){//这个函数作用也是相同的，把choices数组填满，并�
     }
     int ranP =randint(0,4);
     if (choices[ranP]==null){
+      MAnswer.concat(String.valueOf("A"+ranP));
       choices[ranP] = defs.get(i);
       correctDefs.add(defs.get(i));
     }else{
@@ -447,6 +451,7 @@ void MInit(){//这个函数作用也是相同的，把choices数组填满，并�
       if (flag==false) j--;
     }
   }
+  println(MAnswer);
   //这一段用随机的定义WordUnit来把choices填满，这样一来,init函数的工作就完成了
 }
 
@@ -628,7 +633,7 @@ String[] loadAvailableVocabBooks(){//这个用来从Dictionary目录下读取现
   return bookNames;
 }
 
-
+/*
 void pdfRecord(){
   pdfReport.beginDraw();
   pdfReport.background(255);
@@ -691,7 +696,7 @@ void pdfRecord(){
   pdfReport.dispose();
   pdfReport.endDraw();
 }
-
+*/
 LinkedHashMap<String,WordUnit> searchInDicts(String searchKey){
   LinkedHashMap<String,WordUnit> searchResults = new LinkedHashMap<String,WordUnit>();
   for (String bookName: vocabBooks){
@@ -725,6 +730,7 @@ LinkedHashMap<String,WordUnit> searchInDicts(String searchKey){
   }
   return searchResults;
 }
+
 
 boolean checkTime(){
   boolean timeResult = true;
