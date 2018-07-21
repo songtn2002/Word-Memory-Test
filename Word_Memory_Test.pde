@@ -14,6 +14,8 @@ import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
 import processing.pdf.*;
+import java.io.PrintStream;
+import java.io.FileOutputStream;
 
 
 PImage logo; 
@@ -113,6 +115,7 @@ int timeGap = 0;
 
 void setup(){
   //First part of set up, load the controlP5 and set the entire environment up建立环境
+  setErrStream();
   fullScreen();
   smooth(22);
   frameRate(200);
@@ -127,26 +130,30 @@ void setup(){
 }
 
 void draw(){
-  if (runStatus.equals("home")){
-    homePage();
-  }else if (runStatus.equals("rangeChoice")){
-    rChoicePage();
-  }else if (runStatus.equals("error")){
-    errorPage();
-  }else if (runStatus.equals("numberChoice")){
-    nChoicePage();
-  }else if (runStatus.equals("test")){
-    testPage();
-  }else if (runStatus.equals("outcome")){
-    outcomePage();
-  }else if (runStatus.equals("review")){
-    reviewPage();
-  }else if (runStatus.equals("history")){
-    historyPage();
-  }else if (runStatus.equals("quest")){
-    questPage();
-  }else if (runStatus.equals("timeError")){
-    timeErrorPage();
+  try{
+    if (runStatus.equals("home")){
+      homePage();
+    }else if (runStatus.equals("rangeChoice")){
+      rChoicePage();
+    }else if (runStatus.equals("error")){
+      errorPage();
+    }else if (runStatus.equals("numberChoice")){
+      nChoicePage();
+    }else if (runStatus.equals("test")){
+      testPage();
+    }else if (runStatus.equals("outcome")){
+      outcomePage();
+    }else if (runStatus.equals("review")){
+      reviewPage();
+    }else if (runStatus.equals("history")){
+      historyPage();
+    }else if (runStatus.equals("quest")){
+      questPage();
+    }else if (runStatus.equals("timeError")){
+      timeErrorPage();
+    }
+  }catch (Throwable e){
+    e.printStackTrace();
   }
   //if (inputThres == true) println("input!");
 }

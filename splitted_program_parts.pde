@@ -22,6 +22,41 @@ String folderPath(){
   return dp;
 }
 
+String encode (String unEncoded) {
+  byte[] uncoded = unEncoded.getBytes();
+  int len = uncoded.length;
+  byte[] encoded = new byte[len];
+  for (int count = 0; count < len; count++){
+    byte unCByte = uncoded[count];
+    int i = unCByte+128;
+    i = i*2 + 1;
+    if (i >= 256){
+      i--;
+    }
+    byte CByte = (byte)(i%256-128);
+    encoded[count] = CByte;
+  }
+  return new String (encoded);
+}
+
+String decode (String encoded){
+  byte[] toDecode = encoded.getBytes();
+  int len = toDecode.length;
+  byte[] decoded = new byte[len];
+  for (int count = 0; count < len; count++){
+    byte CByte = toDecode[count];
+    int i = CByte + 128;
+    if (i%2==0) {
+      i = (i+256)/2;
+    }else{
+      i = (i-1)/2;
+    }
+    byte unCByte = (byte)(i-128);
+    decoded[count] = unCByte;
+  }
+  return new String (decoded);
+}
+
 void txtRecord(){
   try{
     File testerHistory = new File(folderPath()+"\\history\\"+testerName+".txt");
@@ -29,12 +64,15 @@ void txtRecord(){
     testerHistory.setWritable(true);
     generalHistory.setWritable(true);
     PrintWriter recorder = new PrintWriter(new BufferedWriter(new FileWriter(testerHistory,true)));
-    recorder.println(year()+"年"+month()+"月"+day()+"日");
-    recorder.println(hour()+"点"+minute()+"分"+"，完成考试");
-    recorder.println(selectedBookName+" 从 list "+lowerLimit+" 到 list "+upperLimit);
-    recorder.println("总词汇数 "+String.valueOf(correct+wrong));
-    recorder.println("正确率："+String.valueOf((correct/(float)(correct+wrong))*100)+"%");
-    recorder.println("\n");
+    StringBuilder builder = new StringBuilder();
+    builder.append(year()+"/"+month()+"/"+day()+"\n");
+    builder.append(hour()+":"+minute()+"\n");
+    builder.append(selectedBookName+" from list "+lowerLimit+" to list "+upperLimit+"\n");
+    builder.append("Total word count: "+String.valueOf(correct+wrong)+"\n");
+    builder.append("Correct rate: "+String.valueOf((correct/(float)(correct+wrong))*100)+"%");
+    builder.append("\n");
+    String unEncodedRec = builder.toString();
+    recorder.println(unEncodedRec);
     recorder.close();
     testerHistory.setWritable(false);
     testerHistory.setReadOnly();
@@ -729,6 +767,14 @@ boolean checkTime(){
     e.printStackTrace();
   }
   return timeResult;
+}
+
+void setErrStream(){
+  try{
+    System.setErr(new PrintStream(new FileOutputStream(folderPath()+"\\log\\main.log"),true));
+  }catch (IOException e){
+    e.printStackTrace();
+  }
 }
 
 /*
