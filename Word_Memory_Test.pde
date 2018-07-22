@@ -17,6 +17,7 @@ import processing.pdf.*;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 import java.awt.Desktop;
+import java.util.HashSet;
 
 
 PImage logo; 
@@ -35,6 +36,8 @@ boolean widgetThres = false;
 
 WidgetSet widgets;
 DoubleClickSensor doubleClickSensor =new DoubleClickSensor();
+
+HashSet<Character> legalChars = new HashSet<Character>();
 
 //input restrictions for textFields
 char prevK = ' ';
@@ -133,6 +136,7 @@ void setup(){
   DEFAULTFONT = createFont("lsans.ttf",48);
   check();
   vocabBooks = loadAvailableVocabBooks();
+  initLegalChars();
   //searchInDicts("measure");
 }
 

@@ -58,7 +58,20 @@ String decode (String encoded){
     byte unCByte = (byte)(i-128);
     decoded[count] = unCByte;
   }
-  return new String (decoded);
+  String result = new String (decoded);
+  char[] checkChars = result.toCharArray();
+  boolean isLegal = true;
+  for (char c: checkChars){
+    if (!legalChars.contains(c)){
+      println("illegal: "+c);
+      isLegal = false;
+      break;
+    }
+  }
+  if (isLegal == false){
+    result = "Invalid record";
+  }
+  return result;
 }
 
 void txtRecord(){
@@ -75,8 +88,8 @@ void txtRecord(){
     builder.append("Total word count: "+String.valueOf(correct+wrong)+"\n");
     builder.append("Correct rate: "+String.valueOf((correct/(float)(correct+wrong))*100)+"%");
     builder.append("\n");
-    String unEncodedRec = builder.toString();
-    recorder.println(unEncodedRec);
+    String pRec = builder.toString();
+    recorder.println(pRec);
     recorder.close();
     testerHistory.setWritable(false);
     testerHistory.setReadOnly();
@@ -101,7 +114,8 @@ void txtRecord(){
     }
     nameString = nameString.substring(0,13);
     println("name length: "+nameString.length());
-    generalRecorder.println(dateString+"\t"+timeString+"\t"+nameString+"\t"+testString+"\t"+scoreString);
+    String generalRecord = dateString+"\t"+timeString+"\t"+nameString+"\t"+testString+"\t"+scoreString;
+    generalRecorder.println(encode(generalRecord));
     generalRecorder.close();
   }catch(IOException e){
     e.printStackTrace();
@@ -865,6 +879,20 @@ void setErrStream(){
     System.setErr(new PrintStream(new FileOutputStream(folderPath()+"\\log\\main.log"),true));
   }catch (IOException e){
     e.printStackTrace();
+  }
+}
+
+void initLegalChars(){
+  for (int i = 0; i <26; i++){
+    legalChars.add( (char)('a'+i) );
+    legalChars.add( (char)('A'+i) );
+  }
+  for (int i = 0; i <10; i++){
+    legalChars.add( (char)('0'+i) );
+  }
+  char[] additionals = {' ', '\t', '_', ' ', '/',':'};
+  for (char c : additionals){
+    legalChars.add(c);
   }
 }
 

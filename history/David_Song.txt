@@ -1,6 +1,6 @@
 2018/7/22
-16:13
-CET4 from list 1 to list 5
+19:43
+SAT from list 1 to list 3
 Total word count: 10
-Correct rate: 50.0%
+Correct rate: 40.0%
 
