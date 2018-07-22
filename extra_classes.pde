@@ -352,18 +352,34 @@ class DoubleClickSensor{
 
 class MistakeRecord{
   
+  private int questionNumber;
   private String correctAnswer;
   private String yourAnswer;
   private String questionType;
   private WordUnit[] choices;
   private WordUnit currentTested;
   
-  public MistakeRecord(WordUnit currentTested, String correctAnswer,String yourAnswer, String questionType, WordUnit[] choices){
+  public MistakeRecord(int questionNumber, WordUnit currentTested, String correctAnswer,String yourAnswer, String questionType, WordUnit[] choices){
+    this.questionNumber = questionNumber;
     this.correctAnswer = correctAnswer;
-    this.yourAnswer = yourAnswer;
-    this.questionType = questionType;
+    if (yourAnswer.trim().equals("")){
+      this.yourAnswer = "未选择";
+    }else{
+      this.yourAnswer = yourAnswer;
+    }
+    if (questionType == "multiple"){
+      this.questionType = "多选题";
+    }else if (questionType == "EtoC"){
+      this.questionType = "英译中";
+    }else if (questionType == "CtoE") {
+      this.questionType = "中译英";
+    }
     this.choices = choices;
     this.currentTested = currentTested;
+  }
+  
+  public int getQuestionNumber(){
+    return this.questionNumber;
   }
   
   public String getCorrectAnswer(){
@@ -388,5 +404,29 @@ class MistakeRecord{
   
   public WordUnit getCurrentTested() {
     return currentTested;
+  }
+  
+  public String getQuestionString () {
+    String result = "";
+    result += this.questionNumber + ". "+questionType+"：";
+    if (this.questionType == "多选题"){
+      result += this.currentTested.getWord();
+    }else if (this.questionType == "英译中"){
+      result += this.currentTested.getWord();
+    }else if (this.questionType == "中译英") {
+      result += this.currentTested.getDefinition();
+    }
+    return result;
+  }
+  
+  public String getChoiceString (char choice){
+    WordUnit wu = choices [choice-'A'];
+    String result = choice + ". ";
+    if (questionType == "英译中" || questionType == "多选题"){
+      result += wu.getDefinition();
+    }else{
+      result += wu.getWord();
+    }
+    return result;
   }
 }

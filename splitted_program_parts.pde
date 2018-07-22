@@ -16,6 +16,10 @@ void dpTextSize(float textSize){
   textSize((textSize/1920)*displayWidth);
 }
 
+float dpt(float textSize){
+  return (textSize/1920.0)*displayWidth;
+}
+
 String folderPath(){
   String dp = dataPath("");
   dp = dp.substring(0,dp.length()-5);
@@ -201,7 +205,7 @@ void checkAnswer(){
         }
       }
       if (!errors.equals("")) errors = errors.substring(0,errors.length()-1);
-      
+      mistakes.add(new MistakeRecord(recorder.size(), currentTested,MAnswer, mChoosed, questionType, choices));
     }else{
       boolean checkResult = true;
       for (char c : chars){
@@ -222,7 +226,7 @@ void checkAnswer(){
           }
         }
         if (!errors.equals("")) errors = errors.substring(0,errors.length()-1);
-        mistakes.add(new MistakeRecord(currentTested,MAnswer, mChoosed, questionType, choices));
+        mistakes.add(new MistakeRecord(recorder.size(), currentTested,MAnswer, mChoosed, questionType, choices));
       }
     }
   }else{
@@ -231,11 +235,11 @@ void checkAnswer(){
             correct++;
           }else{
             wrong++;
-            mistakes.add(new MistakeRecord(currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
+            mistakes.add(new MistakeRecord(recorder.size(), currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
           }
      }else{
         wrong++;
-        mistakes.add(new MistakeRecord(currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
+        mistakes.add(new MistakeRecord(recorder.size(), currentTested,String.valueOf(answer), String.valueOf(choosed),questionType, choices));
      }
   }
 }
@@ -424,7 +428,7 @@ void MInit(){//这个函数作用也是相同的，把choices数组填满，并�
     }
     int ranP =randint(0,4);
     if (choices[ranP]==null){
-      MAnswer.concat(String.valueOf("A"+ranP));
+      MAnswer = MAnswer.concat(String.valueOf( (char)('A'+ranP) ));
       choices[ranP] = defs.get(i);
       correctDefs.add(defs.get(i));
     }else{
@@ -451,7 +455,10 @@ void MInit(){//这个函数作用也是相同的，把choices数组填满，并�
       if (flag==false) j--;
     }
   }
-  println(MAnswer);
+  char[] MAnswerChars = MAnswer.toCharArray();//这一段把多选题的答案字母顺序理好
+  Arrays.sort(MAnswerChars);
+  MAnswer = new String (MAnswerChars);
+  println("MAnswer: "+MAnswer);
   //这一段用随机的定义WordUnit来把choices填满，这样一来,init函数的工作就完成了
 }
 
@@ -475,11 +482,11 @@ void initializeSingleChoiceWidgets(){//双击，作为单选题的一大特点�
     buttonD.setText(choices[3].getWord(),50,0);
     buttonE.setText(choices[4].getWord(),50,0);
   }else if (questionType =="EtoC"){
-    buttonA.setText(choices[0].getDefinition(),45,0);
-    buttonB.setText(choices[1].getDefinition(),45,0);
-    buttonC.setText(choices[2].getDefinition(),45,0);
-    buttonD.setText(choices[3].getDefinition(),45,0);
-    buttonE.setText(choices[4].getDefinition(),45,0);
+    buttonA.setText( trimText(choices[0].getDefinition()) ,45,0);
+    buttonB.setText( trimText(choices[1].getDefinition()) ,45,0);
+    buttonC.setText( trimText(choices[2].getDefinition()) ,45,0);
+    buttonD.setText( trimText(choices[3].getDefinition()) ,45,0);
+    buttonE.setText( trimText(choices[4].getDefinition()) ,45,0);
   }
   buttonA.setAction(new Action(){
     public void perform(){
@@ -537,11 +544,11 @@ void initializeMultipleChoiceWidgets(){
   SButtonC = new SButton('C');
   SButtonD = new SButton('D');
   SButtonE = new SButton('E');
-  SButtonA.setText(choices[0].getDefinition(),45,0);
-  SButtonB.setText(choices[1].getDefinition(),45,0);
-  SButtonC.setText(choices[2].getDefinition(),45,0);
-  SButtonD.setText(choices[3].getDefinition(),45,0);
-  SButtonE.setText(choices[4].getDefinition(),45,0);
+  SButtonA.setText( trimText(choices[0].getDefinition()) ,45,0);
+  SButtonB.setText( trimText(choices[1].getDefinition()) ,45,0);
+  SButtonC.setText( trimText(choices[2].getDefinition()) ,45,0);
+  SButtonD.setText( trimText(choices[3].getDefinition()) ,45,0);
+  SButtonE.setText( trimText(choices[4].getDefinition()) ,45,0);
   /*
   当这种SButton在激活状态下被点击时，撤销答案中那个SButton所对应的字符
   反之，当在非激活状态下被点击时，加上它对应的字符
@@ -617,6 +624,14 @@ void loadingTitleBar(){
   text("It may take about 45 seconds. Please be patient.",dpw(3),dph(15));
 }
 
+String trimText (String trimmed) {
+  String result = trimmed;
+  if (result.length()>30) {
+    result = result.substring(0,30)+"...";
+  }
+  return result;
+}
+
 String[] loadAvailableVocabBooks(){//这个用来从Dictionary目录下读取现在所有的单词书
   File dictsFolder = new File(dataPath("")+"\\Dictionaries");
   File [] dicts = dictsFolder.listFiles();
@@ -633,8 +648,77 @@ String[] loadAvailableVocabBooks(){//这个用来从Dictionary目录下读取现
   return bookNames;
 }
 
-/*
+void pdfSetup(){
+  pdfReport.beginDraw();
+  pdfReport.background(255);
+  pdfReport.textSize(dpt(25));
+  pdfReport.textFont(HEITI);
+  pdfReport.textAlign(NORMAL);
+  pdfReport.rectMode(CENTER);
+  pdfReport.strokeWeight(10.0/1920.0*displayWidth);
+}
+
+void pdfDrawLines (float start, float interval, int num){
+  for (int i = 0; i < num; i ++){
+    float lineY = start + interval * i;
+    pdfReport.line(dpw (5),lineY, dpw(95), lineY);
+  }
+}
+
+void pdfFirstPage(){
+  pdfReport.noFill();
+  pdfReport.rect(dpw(50), dph (50), dpw (90), dph(80),dph(4));
+  pdfDrawLines (dph(30), dph(20), 3);
+  pdfReport.fill(0);
+  pdfReport.textAlign(CENTER);
+  pdfReport.textSize(dpt(55));
+  pdfReport.text("词汇测试成绩单", dpw(50), dph (20+1));
+  pdfReport.textAlign(NORMAL);
+  String timeString = testStartTime + " 至 " + testEndTime;
+  pdfReport.text("测试时长： "+timeString, dpw(7), dph (40+1)); 
+  pdfReport.text("选词范围： "+selectedBookName+", List"+upperLimit+" to List"+lowerLimit, dpw(7), dph (60+1)); 
+  pdfReport.text("正确率： "+correct+"/"+String.valueOf(correct+wrong), dpw(7), dph (80+1));
+}
+
+void textLineNum (String text, int lineNum){
+  float textY = dph(5)+dph (90.0/7.0)*(lineNum-0.5)+dph(1);
+  pdfReport.text(text, dpw (7), textY);
+}
+
+void pdfMistakePage(MistakeRecord mistake){
+  pdfReport.nextPage();
+  pdfReport.noFill();
+  pdfReport.rect(dpw(50), dph(50), dpw(90), dph (90), dph(4));
+  pdfDrawLines (dph (5+90.0/7.0), dph (90.0/7.0), 6);
+  pdfReport.textSize (dpt(50));
+  textLineNum (mistake.getQuestionString(),1);
+  for (int i = 0; i <5; i ++){
+    char choice = (char)('A'+i);
+    textLineNum (trimText(mistake.getChoiceString(choice)), i+2);
+  }
+  pdfReport.line(dpw(50), dph(90.0/7.0*6+5.0), dpw(50), dph(95));//draw the septum
+  textLineNum ("正确答案："+mistake.getCorrectAnswer(),7);
+  pdfReport.text("你的答案："+mistake.getYourAnswer(), dpw(52), dph (95.0-90.0/14.0+1));
+}
+
 void pdfRecord(){
+  testEndTime = hour()+"时"+minute()+"分"+second()+"秒";
+  String monthString = "0"+month();
+  monthString = monthString.substring(monthString.length()-2);
+  monthString = "-"+monthString;
+  String dayString = "0"+day();
+  dayString = dayString.substring(dayString.length()-2);
+  dayString = "-"+dayString;
+  pdfName =year()+monthString+dayString+"（"+testEndTime+"）";
+  pdfReport = (PGraphicsPDF) createGraphics (width, height, PDF, "reports\\"+testerName+"\\"+pdfName+".pdf");
+  pdfSetup();
+  pdfFirstPage();
+  for (MistakeRecord m : mistakes){
+    pdfMistakePage (m);
+  }
+  pdfReport.dispose();
+  pdfReport.endDraw();
+  /*
   pdfReport.beginDraw();
   pdfReport.background(255);
   pdfReport.textSize(20);
@@ -695,8 +779,9 @@ void pdfRecord(){
   }
   pdfReport.dispose();
   pdfReport.endDraw();
+  */
 }
-*/
+
 LinkedHashMap<String,WordUnit> searchInDicts(String searchKey){
   LinkedHashMap<String,WordUnit> searchResults = new LinkedHashMap<String,WordUnit>();
   for (String bookName: vocabBooks){

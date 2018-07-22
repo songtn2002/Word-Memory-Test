@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import processing.pdf.*;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
+import java.awt.Desktop;
 
 
 PImage logo; 
@@ -103,6 +104,9 @@ ArrayList<MistakeRecord> mistakes = new ArrayList<MistakeRecord>();
 int heightAdj = 0;
 boolean recorded = false;
 PGraphicsPDF pdfReport;
+String pdfName;
+String testStartTime;
+String testEndTime;
 
 //images
 PImage image11;
@@ -156,6 +160,7 @@ void draw(){
       timeErrorPage();
     }
   }catch (Throwable e){
+    System.err.println(year()+"-"+month()+"-"+day()+"@"+hour()+":"+minute());
     e.printStackTrace();
   }
   //if (inputThres == true) println("input!");

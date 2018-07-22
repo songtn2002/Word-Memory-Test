@@ -1,10 +1,1 @@
-2017/08/24	09:24	David_Song   	214  list1 to list12	0/12
-2017/08/24	09:25	dd           	214  list1 to list1	0/10
-2017/08/24	09:27	David_Son    	214  list1 to list12	0/12
-2017/08/24	09:28	12           	214  list1 to list12	0/12
-2017/08/24	09:28	Alice_Wang   	214  list1 to list12	0/12
-2017/08/24	09:51	Alice_Wang   	214  list1 to list12	1/12
-2017/08/25	18:38	David_Song   	214  list1 to list121	0/12
-2017/11/13	14:19	David_Song   	214  list1 to list2	1/10
-2018/07/21	20:34	david_song   	SAT  list1 to list1	0/12
-2018/07/21	22:27	david_sog    	214  list1 to list1	0/10
+2018/07/22	16:13	David_Song   	CET4 list1 to list5	5/10

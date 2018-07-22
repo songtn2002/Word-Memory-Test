@@ -4,6 +4,7 @@ void homePage(){//在这个homepage里面的start按钮不是用Widget类写的�
     start.setText("Start",88,WHITE);
     start.setAction(new Action(){
       public void perform(){
+        testStartTime = hour()+"时"+minute()+"分"+second()+"秒";
         runStatus = "rangeChoice";
         clearAll();
       }
@@ -247,7 +248,7 @@ void testPage(){//milestone, 开始编写测试页面了,
     fill(WHITE);
     textAlign(NORMAL);
     text(String.valueOf(recorder.size())+"."+"中译英",dpw(3),dph(5));
-    text(currentTested.getDefinition(),dpw(3),dph(15));
+    text(trimText(currentTested.getDefinition()),dpw(3),dph(15));
   }else if(questionType.equals("EtoC")){
     dpTextSize(24);
     textFont(HEITI);
@@ -287,6 +288,7 @@ void outcomePage(){
     image22 = loadImage("pictures\\图片2"+String.valueOf(choice*2)+".jpg");
     if (recorded == false){
       txtRecord();//如果没记录的话，将这次考试记录在文件里
+      pdfRecord();
       recorded = true;
     }
     Button exitButton = new Button(new RoundArea(dpw(60),dph(60),dpw(5)),DARKRED,LIGHTRED); 
@@ -300,8 +302,11 @@ void outcomePage(){
     reviewButton.setText("Review",50,0);
     reviewButton.setAction(new Action(){
       public void perform(){
-        clearAll();
-        runStatus = "review";
+        try{
+          Desktop.getDesktop().open(new File (folderPath()+"\\reports\\"+testerName+"\\"+pdfName+".pdf"));
+        }catch (IOException e){
+          e.printStackTrace();
+        }
       }
     });
   widgetThres=true;
