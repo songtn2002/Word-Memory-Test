@@ -363,6 +363,7 @@ void historyPage(){
         break;
       }else{
         record = decode (record);
+        println("record: "+record);
         record = record.replaceAll("\t","  ");//replace tab with double spaces
         displayedHistories.add(0,record);
       }

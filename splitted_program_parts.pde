@@ -27,48 +27,43 @@ String folderPath(){
 }
 
 String encode (String unEncoded) {
-  byte[] uncoded = unEncoded.getBytes();
-  int len = uncoded.length;
-  byte[] encoded = new byte[len];
-  for (int count = 0; count < len; count++){
-    byte unCByte = uncoded[count];
-    int i = unCByte+128;
-    i = i*2 + 1;
-    if (i >= 256){
-      i--;
+  char[] toEncode = unEncoded.toCharArray();
+  //println("toEncode: "+Arrays.toString(toEncode));
+  char[] encoded = new char[toEncode.length];
+  for (int i = 0; i < toEncode.length; i++){
+    encoded[i] = (char)(toEncode[i]*2+1);
+    if (encoded[i]>126){
+      encoded[i] = (char)(encoded[i]-127);
     }
-    byte CByte = (byte)(i%256-128);
-    encoded[count] = CByte;
   }
-  return new String (encoded);
+  //println("encoded: "+Arrays.toString(encoded));
+  return new String(encoded);
 }
 
 String decode (String encoded){
-  byte[] toDecode = encoded.getBytes();
-  int len = toDecode.length;
-  byte[] decoded = new byte[len];
-  for (int count = 0; count < len; count++){
-    byte CByte = toDecode[count];
-    int i = CByte + 128;
-    if (i%2==0) {
-      i = (i+256)/2;
+  char[] toDecode = encoded.toCharArray();
+  //println("ToDecode: "+Arrays.toString(toDecode));
+  char[] decoded = new char[toDecode.length];
+  boolean validity = true;
+  for (int i =0; i < toDecode.length; i++){
+    char c = toDecode[i];
+    if (c%2==0){
+      decoded[i] = (char)( (c+126)/2 );
     }else{
-      i = (i-1)/2;
+      decoded[i] = (char)( (c-1)/2 );
+      println((int)(c) +" to "+(int)(decoded[i]));
     }
-    byte unCByte = (byte)(i-128);
-    decoded[count] = unCByte;
   }
   String result = new String (decoded);
-  char[] checkChars = result.toCharArray();
-  boolean isLegal = true;
-  for (char c: checkChars){
+  //println("Decoded: "+Arrays.toString(decoded));
+  //println("Decoded: "+result);
+  for (char c : decoded){
     if (!legalChars.contains(c)){
-      println("illegal: "+c);
-      isLegal = false;
+      validity = false;
       break;
     }
   }
-  if (isLegal == false){
+  if (validity == false){
     result = "Invalid record";
   }
   return result;
@@ -114,7 +109,8 @@ void txtRecord(){
     }
     nameString = nameString.substring(0,13);
     println("name length: "+nameString.length());
-    String generalRecord = dateString+"\t"+timeString+"\t"+nameString+"\t"+testString+"\t"+scoreString;
+    String generalRecord = dateString+"  "+timeString+"  "+nameString+"  "+testString+"  "+scoreString;
+    println("record: "+generalRecord);
     generalRecorder.println(encode(generalRecord));
     generalRecorder.close();
   }catch(IOException e){
@@ -690,7 +686,7 @@ void pdfFirstPage(){
   pdfReport.textAlign(NORMAL);
   String timeString = testStartTime + " 至 " + testEndTime;
   pdfReport.text("测试时长： "+timeString, dpw(7), dph (40+1)); 
-  pdfReport.text("选词范围： "+selectedBookName+", List"+upperLimit+" to List"+lowerLimit, dpw(7), dph (60+1)); 
+  pdfReport.text("选词范围： "+selectedBookName+", List"+lowerLimit+" to List"+upperLimit, dpw(7), dph (60+1)); 
   pdfReport.text("正确率： "+correct+"/"+String.valueOf(correct+wrong), dpw(7), dph (80+1));
 }
 
@@ -885,14 +881,18 @@ void setErrStream(){
 void initLegalChars(){
   for (int i = 0; i <26; i++){
     legalChars.add( (char)('a'+i) );
+    println("Num: "+(int)('a'+i));
     legalChars.add( (char)('A'+i) );
+    println("Num: "+(int)('A'+i));
   }
   for (int i = 0; i <10; i++){
     legalChars.add( (char)('0'+i) );
+    println("Num: "+(int)('0'+i));
   }
   char[] additionals = {' ', '\t', '_', ' ', '/',':'};
   for (char c : additionals){
     legalChars.add(c);
+    println("Num: "+(int)(c));
   }
 }
 
