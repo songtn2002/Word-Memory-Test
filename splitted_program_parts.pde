@@ -27,22 +27,24 @@ String folderPath(){
 }
 
 String encode (String unEncoded) {
+  unEncoded = unEncoded.toLowerCase();
   char[] toEncode = unEncoded.toCharArray();
-  //println("toEncode: "+Arrays.toString(toEncode));
+  println("toEncode: "+Arrays.toString(toEncode));
   char[] encoded = new char[toEncode.length];
   for (int i = 0; i < toEncode.length; i++){
     encoded[i] = (char)(toEncode[i]*2+1);
     if (encoded[i]>126){
       encoded[i] = (char)(encoded[i]-127);
     }
+    println((int)(toEncode[i]) +" to "+(int)(encoded[i]));
   }
-  //println("encoded: "+Arrays.toString(encoded));
+  println("encoded: "+Arrays.toString(encoded));
   return new String(encoded);
 }
 
 String decode (String encoded){
   char[] toDecode = encoded.toCharArray();
-  //println("ToDecode: "+Arrays.toString(toDecode));
+  println("ToDecode: "+Arrays.toString(toDecode));
   char[] decoded = new char[toDecode.length];
   boolean validity = true;
   for (int i =0; i < toDecode.length; i++){
@@ -55,7 +57,7 @@ String decode (String encoded){
     }
   }
   String result = new String (decoded);
-  //println("Decoded: "+Arrays.toString(decoded));
+  println("Decoded: "+Arrays.toString(decoded));
   //println("Decoded: "+result);
   for (char c : decoded){
     if (!legalChars.contains(c)){
@@ -75,19 +77,16 @@ void txtRecord(){
     File generalHistory = new File(folderPath()+"\\history\\"+"General History.txt");
     testerHistory.setWritable(true);
     generalHistory.setWritable(true);
-    PrintWriter recorder = new PrintWriter(new BufferedWriter(new FileWriter(testerHistory,true)));
-    StringBuilder builder = new StringBuilder();
-    builder.append(year()+"/"+month()+"/"+day()+"\n");
-    builder.append(hour()+":"+minute()+"\n");
-    builder.append(selectedBookName+" from list "+lowerLimit+" to list "+upperLimit+"\n");
-    builder.append("Total word count: "+String.valueOf(correct+wrong)+"\n");
-    builder.append("Correct rate: "+String.valueOf((correct/(float)(correct+wrong))*100)+"%");
-    builder.append("\n");
-    String pRec = builder.toString();
-    recorder.println(pRec);
-    recorder.close();
-    testerHistory.setWritable(false);
-    testerHistory.setReadOnly();
+    PrintWriter recorder = new PrintWriter(new BufferedWriter(new FileWriter(testerHistory,true))); 
+    recorder.println(year()+"年"+month()+"月"+day()+"日"); 
+    recorder.println(hour()+"点"+minute()+"分"+"，完成考试"); 
+    recorder.println(selectedBookName+" 从 list "+lowerLimit+" 到 list "+upperLimit); 
+    recorder.println("总词汇数 "+String.valueOf(correct+wrong)); 
+    recorder.println("正确率："+String.valueOf((correct/(float)(correct+wrong))*100)+"%"); 
+    recorder.println("\n"); 
+    recorder.close(); 
+    testerHistory.setWritable(false); 
+    testerHistory.setReadOnly(); 
     PrintWriter generalRecorder = new PrintWriter(new BufferedWriter(new FileWriter(generalHistory,true)));
     String monthString = "0"+month();
     monthString = monthString.substring(monthString.length()-2);
@@ -102,7 +101,8 @@ void txtRecord(){
     String bookName = selectedBookName+"    ";
     bookName = bookName.substring(0,4);
     String testString = bookName+" list"+lowerLimit+" to list"+upperLimit;
-    String scoreString = correct+"/"+String.valueOf(correct+wrong);
+    String correctRate = round((float)(correct)/((float)(correct+wrong))*100.0)+"%";
+    String scoreString = correct+"/"+String.valueOf(correct+wrong)+"("+correctRate+")";
     String nameString = testerName;
     for (int i = 0; i<14; i++){
       nameString = nameString.concat(" ");
@@ -687,7 +687,8 @@ void pdfFirstPage(){
   String timeString = testStartTime + " 至 " + testEndTime;
   pdfReport.text("测试时长： "+timeString, dpw(7), dph (40+1)); 
   pdfReport.text("选词范围： "+selectedBookName+", List"+lowerLimit+" to List"+upperLimit, dpw(7), dph (60+1)); 
-  pdfReport.text("正确率： "+correct+"/"+String.valueOf(correct+wrong), dpw(7), dph (80+1));
+  String correctRate = round((float)(correct)/((float)(correct+wrong))*100.0)+"%";
+  pdfReport.text("正确率： "+correct+"/"+String.valueOf(correct+wrong)+"("+correctRate+")", dpw(7), dph (80+1));
 }
 
 void textLineNum (String text, int lineNum){
@@ -841,6 +842,8 @@ boolean checkTime(){
       String line = historyChecker.readLine();
       if (line==null){
         break;
+      }else{
+        line = decode (line);
       }
       String[] splices = line.split("\t");
       String date = splices[0];
@@ -882,14 +885,12 @@ void initLegalChars(){
   for (int i = 0; i <26; i++){
     legalChars.add( (char)('a'+i) );
     println("Num: "+(int)('a'+i));
-    legalChars.add( (char)('A'+i) );
-    println("Num: "+(int)('A'+i));
   }
   for (int i = 0; i <10; i++){
     legalChars.add( (char)('0'+i) );
     println("Num: "+(int)('0'+i));
   }
-  char[] additionals = {' ', '\t', '_', ' ', '/',':'};
+  char[] additionals = {' ', '_', ' ', '/',':','(',')','%'};
   for (char c : additionals){
     legalChars.add(c);
     println("Num: "+(int)(c));
