@@ -109,7 +109,7 @@ void txtRecord(){
     }
     nameString = nameString.substring(0,13);
     println("name length: "+nameString.length());
-    String generalRecord = dateString+"  "+timeString+"  "+nameString+"  "+testString+"  "+scoreString;
+    String generalRecord = dateString+"\t"+timeString+"\t"+nameString+"\t"+testString+"\t"+scoreString;
     println("record: "+generalRecord);
     generalRecorder.println(encode(generalRecord));
     generalRecorder.close();
@@ -858,9 +858,11 @@ boolean checkTime(){
         int tempMin = Integer.parseInt(timeSplits[1]);
         int timeDiffer = hour()*60+minute()-tempHour*60-tempMin;
         String correctRateString = splices[4];
+        correctRateString = correctRateString.split("\\(")[0];
+        println("correct Rate: "+correctRateString);
         String[] correctAndWrongSplices = correctRateString.split("/");
         float correctRate = Integer.parseInt(correctAndWrongSplices[0])/(float)(Integer.parseInt(correctAndWrongSplices[1]));
-        if (tempName.equals(testerName)&&timeDiffer<15&&correctRate<0.93){
+        if (tempName.equalsIgnoreCase(testerName)&&timeDiffer<15&&correctRate<0.93){
           println("Only "+timeDiffer+" minutes");
           timeResult = false;
           timeGap = timeDiffer;
@@ -890,7 +892,7 @@ void initLegalChars(){
     legalChars.add( (char)('0'+i) );
     println("Num: "+(int)('0'+i));
   }
-  char[] additionals = {' ', '_', ' ', '/',':','(',')','%'};
+  char[] additionals = {' ', '_', ' ', '/',':','(',')','%','\t'};
   for (char c : additionals){
     legalChars.add(c);
     println("Num: "+(int)(c));
