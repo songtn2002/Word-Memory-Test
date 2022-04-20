@@ -102,7 +102,7 @@ void errorPage(){
   titleBar();
   fill(0);
   dpTextSize(60);
-  text("Sorry, the test can only be started when there is \nno internet connection and dictionary softwares,\n please close and restart the test",dpw(50),dph(30));
+  text("Sorry, the test can only be started when there is \nno internet connection and dictionary software,\n please close and restart the test",dpw(50),dph(30));
   widgets.display();
 }//The error Page ends here
 
